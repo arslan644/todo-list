@@ -51,7 +51,7 @@ def main():
 def select_menu():
     global current_menu
     menu = input("Select: ")
-    if menu not in available_menu:
+    if int(menu) not in available_menu:
         menu = "_"
     match menu:
         case "1":
@@ -130,14 +130,14 @@ def remove_task():
     global current_menu
     print("Remove Task (Note: Press 'ctr + c' to go back)")
     view_tasks()
-    text = input("Select Task: ")
     try: 
+        text = input("Select Task: ")
         if text.isdigit():
             remove_by_index(text)
         else:
             remove_by_name(text)
         show_menu()
-    except:
+    except KeyboardInterrupt:
         current_menu = 2
         show_menu()
     
