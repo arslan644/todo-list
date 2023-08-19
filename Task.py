@@ -20,6 +20,15 @@ class Task:
         headers = [ "No", "Task", "Status" ]
         print(tabulate(self.tasks, headers=headers, tablefmt=style, showindex=range(1, self.count + 1)))
     
+    def mark_by_index(self, index):
+        if self.tasks[index][1] is "\033[33m Pending \033[0m":
+            self.tasks[index][1] = "\033[32m Complete \033[0m"
+        else:
+            self.tasks[index][1] = "\033[33m Pending \033[0m"
+
+    def mark_by_name(self, name):
+        print("to be implemented")
+
     def remove_by_index(self, index):
         del self.tasks[index]
 
@@ -30,7 +39,7 @@ class Task:
                 break
 
     #☐ 🗹
-    def add(self, task, status="Pending"):
+    def add(self, task, status="\033[33m Pending \033[0m"):
         self.tasks.append([task, status])
 
     @property
