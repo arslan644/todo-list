@@ -215,16 +215,25 @@ def remove_task():
 
 
 def remove_by_name(text):
-    task.remove_by_name(text)
+    global input_taken
+    if not task.remove_by_name(text):
+        print('\033[31m Task name is not in task list \033[0m')
+        time.sleep(1)
+        input_taken = False
+        show_menu()
 
 def remove_by_index(text):
+    global input_taken
     index = int(text)
     count = task.count
     if 0 < index <= count:
         task.remove_by_index(index-1)
     else:
         print('\033[31m Selected Index is not in task list \033[0m')
-        remove_task()
+        time.sleep(1)
+        input_taken = False
+        show_menu()
+        #remove_task()
 
 def navi_menu(current_menu):
     global available_menu

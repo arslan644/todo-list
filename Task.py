@@ -36,7 +36,8 @@ class Task:
         for i in range(len(self.tasks)):
             if name in self.tasks[i]:
                 del self.tasks[i]
-                break
+                return True
+        return False
 
     #☐ 🗹
     def add(self, task, status="\033[33m Pending \033[0m"):
