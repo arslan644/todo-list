@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, time
 from Task import Task
 from tabulate import tabulate
 
@@ -104,15 +104,35 @@ def add_task():
     exit = False
     while not exit:
         try:
-            task.add(input(f"{task.count + 1}: "))
+            verify_input(input(f"{task.count + 1}: "))
+            
         except KeyboardInterrupt:
             current_menu = 2
             exit = True
 
+def verify_input(new_task):
+    if not new_task.strip():
+        print("can't add empty task")
+        time.sleep(1)
+        show_menu()
+    elif  already_in_list(new_task.strip()):
+        print("task already exist")
+        time.sleep(1)
+        show_menu()
+    task.add(new_task.strip())
+
+def already_in_list(new_task):
+    if task.count <= 0:
+        return False
+    
+    for i in range(task.count):
+        if new_task in task.tasks[i]:
+            return True
+
 def print_previous_tasks():
     if task.count > 0:
         for i in range(task.count):
-            print(f"{i + 1}: {task.task[i][0]}")
+            print(f"{i + 1}: {task.tasks[i][0]}")
 def open_current_menu():         
     global current_menu           
     match current_menu:

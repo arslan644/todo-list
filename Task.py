@@ -2,40 +2,40 @@ from tabulate import tabulate
 
 class Task:
     def __init__(self):
-        self.task = []
-        self.count = len(self.task)
+        self.tasks = []
+        self.count = len(self.tasks)
 
     def __str__(self):
-        return f"task: {self.task}"
+        return f"task: {self.tasks}"
     
     @property
-    def task(self):
+    def tasks(self):
         return self._task
     
-    @task.setter
-    def task(self, task):
+    @tasks.setter
+    def tasks(self, task):
         self._task = task
 
     def view(self, style="grid"):
         headers = [ "No", "Task", "Status" ]
-        print(tabulate(self.task, headers=headers, tablefmt=style, showindex=range(1, self.count + 1)))
+        print(tabulate(self.tasks, headers=headers, tablefmt=style, showindex=range(1, self.count + 1)))
     
     def remove_by_index(self, index):
-        del self.task[index]
+        del self.tasks[index]
 
     def remove_by_name(self, name):
-        for i in range(len(self.task)):
-            if name in self.task[i]:
-                del self.task[i]
+        for i in range(len(self.tasks)):
+            if name in self.tasks[i]:
+                del self.tasks[i]
                 break
 
     #☐ 🗹
     def add(self, task, status="Pending"):
-        self.task.append([task, status])
+        self.tasks.append([task, status])
 
     @property
     def count(self):
-        self._count = len(self.task)
+        self._count = len(self.tasks)
         return self._count
     
     @count.setter
