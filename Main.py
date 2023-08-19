@@ -48,37 +48,27 @@ styles = [
 
 def main():
     show_menu()
-    
+
+def testing():
+    print("checking")
+
 def select_menu():
     global current_menu
     menu = input("Select: ")
-    if not menu.isdigit():
-        menu = "_"
-    elif int(menu) not in available_menu:
-        menu = "_"
-    match menu:
-        case "1":
-            current_menu = 1
-        case "2":
-            current_menu = 2
-        case "3":
-            current_menu = 3
-        case "4":
-            current_menu = 4
-        case "5":
-            current_menu = 5
-        case _:
-            print('\033[31m Invalid Input\033[0m')
-            time.sleep(1)
-            show_menu()
+    if not menu.isdigit() or int(menu) not in available_menu:
+        print('\033[31m Invalid Input\033[0m')
+        time.sleep(1)
+        show_menu()
+    else:
+        current_menu = int(menu)
+        show_menu()
     
-
 def app_title():
     print(tabulate((["|     ToDo List      |"],)))
 
 def view_tasks(style_no=22):
     if task.count <= 0:
-        print(tabulate((["No Tasks"],), tablefmt="mixed_outline"))
+        print(tabulate((['\033[47m \033[30m No Tasks \033[0m' ],), tablefmt="mixed_outline"))
     else:
         if len(sys.argv) > 1:
             task.view(sys.argv[1])
@@ -208,6 +198,8 @@ def remove_task():
         view_tasks()
         print("(Note: Press 'ctr + c' to go back)")
     try: 
+        if task.count is 0:
+            raise KeyboardInterrupt
         text = input("Select Task: ")
         input_taken = True
         if text.isdigit():
@@ -239,7 +231,7 @@ def navi_menu(current_menu):
     available_menu = []
     nav_menu = ""
     for menu in menues:
-        if menu is current_menu or (task.count <= 0 and menu is 3):
+        if menu is current_menu or (task.count <= 0 and (menu is 3 or menu is 4)):
             continue
         nav_menu += (f"[{menu}-{menues[menu]}] ")
         available_menu.append(menu)
