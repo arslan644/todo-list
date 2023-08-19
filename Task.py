@@ -27,6 +27,7 @@ class Task:
         for i in range(len(self.task)):
             if name in self.task[i]:
                 del self.task[i]
+                break
 
     #☐ 🗹
     def add(self, task, status="Pending"):

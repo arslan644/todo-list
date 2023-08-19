@@ -6,6 +6,7 @@ menues = {1: "Add Task", 2: "View Tasks", 3: "Remove Task", 4: "Exit"}
 available_menu = []
 current_menu = 1
 task = Task()
+input_taken = False
 styles = [
         "plain",
         "simple",
@@ -51,7 +52,9 @@ def main():
 def select_menu():
     global current_menu
     menu = input("Select: ")
-    if int(menu) not in available_menu:
+    if not menu.isdigit():
+        menu = "_"
+    elif int(menu) not in available_menu:
         menu = "_"
     match menu:
         case "1":
@@ -127,15 +130,19 @@ def open_current_menu():
             show_menu()
 
 def remove_task():
-    global current_menu
-    print("Remove Task (Note: Press 'ctr + c' to go back)")
-    view_tasks()
+    global current_menu, input_taken
+    if not input_taken:
+        print(" Remove Task ")
+        view_tasks()
+        print("(Note: Press 'ctr + c' to go back)")
     try: 
         text = input("Select Task: ")
+        input_taken = True
         if text.isdigit():
             remove_by_index(text)
         else:
             remove_by_name(text)
+        input_taken = False
         show_menu()
     except KeyboardInterrupt:
         current_menu = 2
@@ -151,7 +158,6 @@ def remove_by_index(text):
     if 0 < index <= count:
         task.remove_by_index(index-1)
     else:
-        print(f"index: {index}")
         print("Selected Index is not in task list")
         remove_task()
 
