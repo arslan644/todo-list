@@ -1,10 +1,9 @@
-import sys, os, time
-from Task import Task
+import sys, os, time, Menu
+from Todo_List import Todo_List
 from tabulate import tabulate
 
-available_menu = []
-current_menu = 1
-task = Task()
+user = ""
+todo_list = Todo_List()
 input_taken = False
 styles = [
         "plain",
@@ -44,68 +43,50 @@ styles = [
         "textile",
         "tsv"
         ]
-menues = {1: "Add Task", 2: "View Tasks", 3: "Remove Task", 4: "Mark Task", 5: "Exit"}
 
 def app_title():
     print(tabulate((["|     ToDo List      |"],)))
 
 def main():
+    global user
+    while not user:
+        user = input("What's your Name: ").strip().upper()
     show_menu()
 
 def show_menu():
     clear_screen()
     app_title()
     open_current_menu()
-    navi_menu()
-    select_menu()
-
-def select_menu():
-    global current_menu
-    menu = input("Select: ")
-    if not menu.isdigit() or int(menu) not in available_menu:
-        print('\033[31m Invalid Input\033[0m')
-        time.sleep(1)
-        show_menu()
-    else:
-        current_menu = int(menu)
-        show_menu()
-    
-def open_current_menu():         
-    global current_menu           
-    match current_menu:
-        case 1:
+    Menu.navi_menu()
+    Menu.select_menu()
+    show_menu()
+ 
+def open_current_menu():                  
+    match Menu.current_menu:
+        case Menu.main_menu:
+            print(f"Welcome [\033[32m {user} \033[0m]")
+        case Menu.add_menu:
             add_task()
-        case 2:
+        case Menu.view_menu:
             view_tasks()
-        case 3:
+        case Menu.remove_menu:
             remove_task()
-        case 4:
+        case Menu.mark_menu:
             mark_task()
-        case 5:
+        case Menu.eixt_menu:
             exit_progarm()
         case _:
             show_menu()
 
-def navi_menu():
-    global available_menu, current_menu
-    available_menu = []
-    nav_menu = ""
-    for menu in menues:
-        if menu is current_menu or (task.count <= 0 and (menu is 3 or menu is 4)):
-            continue
-        nav_menu += (f"[{menu}-{menues[menu]}] ")
-        available_menu.append(menu)
-    print(tabulate(([nav_menu],)))
-
 def view_tasks(style_no=22):
-    if task.count <= 0:
+    if todo_list.task_count <= 0:
         print(tabulate((['\033[47m \033[30m No Tasks \033[0m' ],), tablefmt="mixed_outline"))
     else:
         if len(sys.argv) > 1:
-            task.view(sys.argv[1])
+            todo_list.view(sys.argv[1])
         else:
             index = bound_in_range(style_no)
-            task.view(style=styles[index])
+            todo_list.view(style=styles[index])
         
 def bound_in_range(number):
     lower_bound = 0
@@ -113,18 +94,17 @@ def bound_in_range(number):
     return max(min(number, upper_bound), lower_bound)
 
 def add_task():
-    global current_menu
     print("(Note: Press 'ctr + c' to save)")
     print("Add Task:")
     print_previous_tasks()
     exit = False
     while not exit:
         try:
-            new_task = input(f"{task.count + 1}: ")
+            new_task = input(f"{todo_list.task_count + 1}: ")
             verify_task_input(new_task)
-            task.add(new_task.strip())
+            todo_list.add(new_task.strip())
         except KeyboardInterrupt:
-            current_menu = 2
+            Menu.current_menu = Menu.main_menu
             exit = True
     show_menu()
 
@@ -139,20 +119,20 @@ def verify_task_input(new_task):
         show_menu()
     
 def already_in_list(new_task):
-    if task.count <= 0:
+    if todo_list.task_count <= 0:
         return False
     
-    for i in range(task.count):
-        if new_task in task.tasks[i]:
+    for i in range(todo_list.task_count):
+        if new_task in todo_list.tasks[i]:
             return True
 
 def print_previous_tasks():
-    if task.count > 0:
-        for i in range(task.count):
-            print(f"{i + 1}: {task.tasks[i][0]}")
+    if todo_list.task_count > 0:
+        for i in range(todo_list.task_count):
+            print(f"{i + 1}: {todo_list.tasks[i][0]}")
 
 def mark_task():
-    global current_menu, input_taken
+    global input_taken
     if not input_taken:
         print(" Mark Task ")
         view_tasks()
@@ -167,45 +147,44 @@ def mark_task():
         input_taken = False
         show_menu()
     except KeyboardInterrupt:
-        current_menu = 2
+        Menu.current_menu = Menu.main_menu
         show_menu()
 
 def mark_by_name(text):
-    task.mark_by_name(text)
+    todo_list.mark_by_name(text)
 
 def mark_by_index(text):
     index = int(text)
-    count = task.count
+    count = todo_list.task_count
     if 0 < index <= count:
-        task.mark_by_index(index-1)
+        todo_list.mark_by_index(index-1)
     else:
         print('\033[31m Selected Index is not in task list \033[0m')
         mark_task()
 
 def exit_progarm():
-    global current_menu
     print("Are you Sure?")
     print(tabulate((["1-Yes", " 0-No"],), tablefmt="mixed_outline"))
     user_input = ""
     while user_input not in ["1", "0"]:
         user_input = input()
-        if user_input is "1":
+        if user_input == "1":
             clear_screen()
             sys.exit()
-        elif user_input is "0":
-            current_menu = 2
+        elif user_input == "0":
+            Menu.current_menu = Menu.main_menu
             show_menu()
         else:
             print('\033[31m Invalid Selection \033[0m')
 
 def remove_task():
-    global current_menu, input_taken
+    global input_taken
     if not input_taken:
         print(" Remove Task ")
         view_tasks()
         print("(Note: Press 'ctr + c' to go back)")
     try: 
-        if task.count is 0:
+        if todo_list.task_count == 0:
             raise KeyboardInterrupt
         text = input("Select Task: ")
         input_taken = True
@@ -216,12 +195,12 @@ def remove_task():
         input_taken = False
         show_menu()
     except KeyboardInterrupt:
-        current_menu = 2
+        Menu.current_menu = Menu.main_menu
         show_menu()
 
 def remove_by_name(text):
     global input_taken
-    if not task.remove_by_name(text):
+    if not todo_list.remove_by_name(text):
         print('\033[31m Task name is not in task list \033[0m')
         time.sleep(1)
         input_taken = False
@@ -230,9 +209,9 @@ def remove_by_name(text):
 def remove_by_index(text):
     global input_taken
     index = int(text)
-    count = task.count
+    count = todo_list.task_count
     if 0 < index <= count:
-        task.remove_by_index(index-1)
+        todo_list.remove_by_index(index-1)
     else:
         print('\033[31m Selected Index is not in task list \033[0m')
         time.sleep(1)
