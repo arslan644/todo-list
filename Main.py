@@ -172,7 +172,10 @@ def exit_progarm():
     print(tabulate((["1-Yes", " 0-No"],), tablefmt="mixed_outline"))
     user_input = ""
     while user_input not in ["1", "0"]:
-        user_input = input()
+        try:
+            user_input = input()
+        except KeyboardInterrupt:
+            show_menu()
         if user_input == "1":
             save_tasks()
             clear_screen()
