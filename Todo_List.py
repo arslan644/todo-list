@@ -1,8 +1,10 @@
+import os, json
 from tabulate import tabulate
 
 class Todo_List:
     def __init__(self):
-        self.tasks = []
+        self.check_data()
+        self.get_name()
         self.task_count = len(self.tasks)
 
     def __str__(self):
@@ -16,15 +18,55 @@ class Todo_List:
     def tasks(self, task):
         self._task = task
 
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, name):
+        self._name = name
+
+    def get_name(self):
+        while not self.name:
+            self.name = input("Name your list: ") 
+
+    def load_data(self, file_name):
+        with open(file_name, "r") as f:    
+            content = f.read()
+            if content:
+                data = json.loads(content)
+                self.name = next(iter(data.keys()))
+                self.tasks = data[self.name]
+            
+    def check_data(self):
+        file_name = "Data.json"
+        if os.path.exists(file_name):
+            self.load_data(file_name)
+        else:
+            self.name = ""
+            self.tasks = []
+ 
+    def save_data(self):
+        file_name = f"Data.json"
+        with open(file_name, "w") as f:
+            json.dump({self.name: self.tasks}, f)
+
+    def delete_file(self):
+        file_name = f"{self.name}_Data"
+        if os.path.exists(file_name):
+            os.remove(file_name)
+
     def view(self, style="grid"):
         headers = [ "No", "Task", "Status" ]
         print(tabulate(self.tasks, headers=headers, tablefmt=style, showindex=range(1, self.task_count + 1)))
     
     def mark_by_index(self, index):
-        if self.tasks[index][1] is "\033[33m Pending \033[0m":
-            self.tasks[index][1] = "\033[32m Complete \033[0m"
+        pending = "\033[33m Pending \033[0m"
+        complete = "\033[32m Complete \033[0m"
+        if self.tasks[index][1] == pending:
+            self.tasks[index][1] = complete
         else:
-            self.tasks[index][1] = "\033[33m Pending \033[0m"
+            self.tasks[index][1] = pending
 
     def mark_by_name(self, name):
         print("to be implemented")
@@ -39,7 +81,6 @@ class Todo_List:
                 return True
         return False
 
-    #☐ 🗹
     def add(self, task, status="\033[33m Pending \033[0m"):
         self.tasks.append([task, status])
 

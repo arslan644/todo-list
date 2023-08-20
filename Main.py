@@ -2,7 +2,6 @@ import sys, os, time, Menu
 from Todo_List import Todo_List
 from tabulate import tabulate
 
-user = ""
 todo_list = Todo_List()
 input_taken = False
 styles = [
@@ -47,10 +46,13 @@ styles = [
 def app_title():
     print(tabulate((["|     ToDo List      |"],)))
 
+def save_tasks():
+    if todo_list._count > 0:
+        todo_list.save_data()
+    else:
+        todo_list.delete_file()
+
 def main():
-    global user
-    while not user:
-        user = input("What's your Name: ").strip().upper()
     show_menu()
 
 def show_menu():
@@ -58,13 +60,16 @@ def show_menu():
     app_title()
     open_current_menu()
     Menu.navi_menu()
-    Menu.select_menu()
+    try:
+        Menu.select_menu()
+    except KeyboardInterrupt:
+        exit_progarm()
     show_menu()
  
 def open_current_menu():                  
     match Menu.current_menu:
         case Menu.main_menu:
-            print(f"Welcome [\033[32m {user} \033[0m]")
+            print(f"List Name: [\033[32m {todo_list.name} \033[0m]")
         case Menu.add_menu:
             add_task()
         case Menu.view_menu:
@@ -169,6 +174,7 @@ def exit_progarm():
     while user_input not in ["1", "0"]:
         user_input = input()
         if user_input == "1":
+            save_tasks()
             clear_screen()
             sys.exit()
         elif user_input == "0":
