@@ -1,11 +1,13 @@
-import os, json
+import os, json, Database
 from tabulate import tabulate
 
 class Todo_List:
     def __init__(self):
+        Database.connect("TODO")
         self.check_data()
         self.get_name()
         self.task_count = len(self.tasks)
+        
 
     def __str__(self):
         return f"task: {self.tasks}"
