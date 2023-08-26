@@ -179,6 +179,8 @@ def exit_progarm():
         if user_input == "1":
             save_tasks()
             clear_screen()
+            Database.commit()
+            Database.close()
             sys.exit()
         elif user_input == "0":
             Menu.current_menu = Menu.main_menu
