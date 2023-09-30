@@ -71,7 +71,8 @@ def authenticate():
             case 2:
                 clear_screen()
                 app_title()
-                user_auth.signup_user()
+                if not user_auth.signup_user():
+                    authenticate()
             case 3:
                 clear_screen()
                 sys.exit()
