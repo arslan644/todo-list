@@ -5,6 +5,7 @@ class Todo_List:
     def __init__(self):
         Database.connect("TODO")
         self.check_data()
+        self.check_database()
         self.get_name()
         self.task_count = len(self.tasks)
         
@@ -47,11 +48,17 @@ class Todo_List:
         else:
             self.name = ""
             self.tasks = []
- 
+    
+    def check_database(self):
+        if Database.table_exist("Lists"):
+            ...
+
     def save_data(self):
         file_name = f"Data.json"
         with open(file_name, "w") as f:
             json.dump({self.name: self.tasks}, f)
+        Database.commit()
+        Database.close()
 
     def delete_file(self):
         file_name = f"{self.name}_Data"

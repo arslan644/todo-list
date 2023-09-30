@@ -1,4 +1,4 @@
-import sys, os, time, Menu
+import sys, os, time, Menu, user_auth
 from Todo_List import Todo_List
 from tabulate import tabulate
 
@@ -53,7 +53,27 @@ def save_tasks():
         todo_list.delete_file()
 
 def main():
+    #authenticate()
     show_menu()
+
+def authenticate():
+    clear_screen()
+    app_title()
+    print(tabulate((["1: Login", "2: Signup", "3: Exit"],), tablefmt="mixed_outline"))
+    Selection = input("Select: ")
+    match int(Selection):
+        case 1:
+            user_auth.login_user()
+        case 2:
+                user_auth.signup_user()
+        case 3:
+            clear_screen()
+            sys.exit()
+        case _:
+            print('\033[31m Invalid Input\033[0m')
+            time.sleep(2)
+            authenticate()
+        
 
 def show_menu():
     clear_screen()
@@ -179,8 +199,6 @@ def exit_progarm():
         if user_input == "1":
             save_tasks()
             clear_screen()
-            Database.commit()
-            Database.close()
             sys.exit()
         elif user_input == "0":
             Menu.current_menu = Menu.main_menu
