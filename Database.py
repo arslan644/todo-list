@@ -14,10 +14,10 @@ def main():
     t = "TEXT"
     u = "UNIQUE"
     table_name = "Users"
-    data = {"id": f"{i} {p} {a}", "username": f"{t} {u} {n}", "password": f"{t} {n}"}
+    data = {"username": "test", "password": "testing"}
     connect("TODO")
     #drop_table(table_name)
-    create_table(table_name, data)
+    #create_table(table_name, data)
     #insert_data(table_name, data)
     commit()
     close()
@@ -43,15 +43,17 @@ def record_exist(table_name, column_name, value_to_check):
         cursor.execute(f"SELECT * FROM {table_name} WHERE {column_name}=?", (value_to_check,))
         result = cursor.fetchone()
         return result is not None
-    else:
-        create_table(table_name)
+
+def record_match(table_name, known_col, known_value, col_to_search, value_to_check):
+    cursor.execute(f"SELECT {col_to_search} FROM {table_name} WHERE {known_col} = ?", (known_value,))
+    result = cursor.fetchone()
+    return value_to_check == result[0]
 
 def table_size(name):
     cursor.execute(f"SELECT count(*) FROM {name};")
     size = cursor.fetchone()
     return size[0]
 
-#name paramter is the name of the table and columns parameter is a dictionary having keys as names of column in string and value
 def create_table(name, columns={}) -> None:
     """
         create_table(string, {"columnName": "DataType Attributes"}) -> None

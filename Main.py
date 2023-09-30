@@ -53,7 +53,7 @@ def save_tasks():
         todo_list.delete_file()
 
 def main():
-    #authenticate()
+    authenticate()
     show_menu()
 
 def authenticate():
@@ -61,18 +61,27 @@ def authenticate():
     app_title()
     print(tabulate((["1: Login", "2: Signup", "3: Exit"],), tablefmt="mixed_outline"))
     Selection = input("Select: ")
-    match int(Selection):
-        case 1:
-            user_auth.login_user()
-        case 2:
+    try:
+        match int(Selection):
+            case 1:
+                clear_screen()
+                app_title()
+                if not user_auth.login_user():
+                    authenticate()
+            case 2:
+                clear_screen()
+                app_title()
                 user_auth.signup_user()
-        case 3:
-            clear_screen()
-            sys.exit()
-        case _:
-            print('\033[31m Invalid Input\033[0m')
-            time.sleep(2)
-            authenticate()
+            case 3:
+                clear_screen()
+                sys.exit()
+            case _:
+                print('\033[31m Invalid Input\033[0m')
+                time.sleep(1)
+    except Exception:
+        print('\033[31m Invalid Input\033[0m')
+        time.sleep(1)
+        authenticate()
         
 
 def show_menu():
