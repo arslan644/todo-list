@@ -4,18 +4,20 @@ connection = None
 cursor  = None
 
 def main():
+    a = "AUTOINCREMENT"
     f = "FOREIGN KEY "
     i = "INTEGER"
+    n = "NOT NULL"
     p = " PRIMARY KEY"
     r = "REFERENCES "
     s = "SELECT"
     t = "TEXT"
     u = "UNIQUE"
     table_name = "Users"
-    data = {"username": "arno", "password": "testing"}
+    data = {"id": f"{i} {p} {a}", "username": f"{t} {u} {n}"}
     connect("TODO")
     #drop_table(table_name)
-    #create_table(table_name, {"name": (t, [u])})
+    create_table(table_name, data)
     #insert_data(table_name, data)
     commit()
     close()
