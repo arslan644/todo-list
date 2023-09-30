@@ -14,7 +14,7 @@ def main():
     t = "TEXT"
     u = "UNIQUE"
     table_name = "Users"
-    data = {"id": f"{i} {p} {a}", "username": f"{t} {u} {n}"}
+    data = {"id": f"{i} {p} {a}", "username": f"{t} {u} {n}", "password": f"{t} {n}"}
     connect("TODO")
     #drop_table(table_name)
     create_table(table_name, data)
