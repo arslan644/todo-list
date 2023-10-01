@@ -84,7 +84,6 @@ def authenticate():
         time.sleep(1)
         authenticate()
         
-
 def show_menu():
     clear_screen()
     app_title()

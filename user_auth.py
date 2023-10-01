@@ -26,7 +26,6 @@ def signup_user():
     Database.insert_data("Users", {"username": username, "password": password})
     return True
 
-
 def login_user():
     try:
         username = get_username()

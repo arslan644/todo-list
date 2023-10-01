@@ -9,7 +9,6 @@ class Todo_List:
         self.get_name()
         self.task_count = len(self.tasks)
         
-
     def __str__(self):
         return f"task: {self.tasks}"
     
